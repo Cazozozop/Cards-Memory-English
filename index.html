@@ -14,12 +14,48 @@
             background-color: #121212;
             color: white;
             font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: rgba(0, 174, 255, 0.8);
+            box-shadow: 0 0 6px rgba(0, 174, 255, 1);
+            border-radius: 50%;
+            animation: fall linear infinite, fadeInOut ease-in-out infinite;
+            opacity: 0;
+        }
+        @keyframes fall {
+            from {
+                transform: translateY(-10vh);
+            }
+            to {
+                transform: translateY(110vh);
+            }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
         }
         .container {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            z-index: 1;
         }
         .card {
             width: 400px;
@@ -90,19 +126,10 @@
             background-color: rgba(255, 255, 255, 0.4);
             transform: scale(1.1);
         }
-        .fade-out {
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: opacity 0.4s, transform 0.4s;
-        }
-        .fade-in {
-            opacity: 1;
-            transform: translateX(0);
-            transition: opacity 0.4s, transform 0.4s;
-        }
     </style>
 </head>
 <body>
+    <div class="background-animation" id="background"></div>
     <div class="container">
         <div class="arrow" onclick="prevCard()">←</div>
         <div class="card" id="card-container">
@@ -130,15 +157,9 @@
         }
 
         function updateCard() {
-            const cardContainer = document.getElementById("card-container");
-            cardContainer.classList.add("fade-out");
-            setTimeout(() => {
-                document.getElementById("front").textContent = cards[currentCard].front;
-                document.getElementById("back").textContent = cards[currentCard].back;
-                document.getElementById("card").classList.remove("flipped");
-                cardContainer.classList.remove("fade-out");
-                cardContainer.classList.add("fade-in");
-            }, 400);
+            document.getElementById("front").textContent = cards[currentCard].front;
+            document.getElementById("back").textContent = cards[currentCard].back;
+            document.getElementById("card").classList.remove("flipped");
         }
 
         function nextCard() {
@@ -154,6 +175,19 @@
                 updateCard();
             }
         }
+
+        function createSparkles() {
+            const background = document.getElementById("background");
+            for (let i = 0; i < 50; i++) {
+                let sparkle = document.createElement("div");
+                sparkle.classList.add("sparkle");
+                sparkle.style.left = Math.random() * 100 + "vw";
+                sparkle.style.animationDuration = (Math.random() * 2 + 2) + "s";
+                sparkle.style.animationDelay = Math.random() * 5 + "s";
+                background.appendChild(sparkle);
+            }
+        }
+        createSparkles();
     </script>
 </body>
 </html>
