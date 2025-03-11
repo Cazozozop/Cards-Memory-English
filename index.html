@@ -1,0 +1,72 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, RefreshCcw } from "lucide-react";
+import { motion } from "framer-motion";
+
+const cards = [
+  { front: "Carte 1 - Face avant", back: "Carte 1 - Face arrière" },
+  { front: "Carte 2 - Face avant", back: "Carte 2 - Face arrière" },
+  { front: "Carte 3 - Face avant", back: "Carte 3 - Face arrière" },
+  { front: "Carte 4 - Face avant", back: "Carte 4 - Face arrière" },
+  { front: "Carte 5 - Face avant", back: "Carte 5 - Face arrière" }
+];
+
+export default function FlipCards() {
+  const [currentCard, setCurrentCard] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+
+  const handleFlip = () => {
+    setFlipped((prev) => !prev);
+  };
+
+  const nextCard = () => {
+    if (currentCard < cards.length - 1) {
+      setCurrentCard(currentCard + 1);
+      setFlipped(false);
+    }
+  };
+
+  const prevCard = () => {
+    if (currentCard > 0) {
+      setCurrentCard(currentCard - 1);
+      setFlipped(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="flex items-center space-x-4">
+        <Button variant="ghost" onClick={prevCard} disabled={currentCard === 0}>
+          <ArrowLeft size={32} />
+        </Button>
+        <div className="relative w-64 h-40">
+          <motion.div
+            className="absolute w-full h-full bg-gray-800 rounded-2xl flex items-center justify-center text-xl font-bold shadow-xl"
+            animate={{ rotateY: flipped ? 180 : 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
+          >
+            {!flipped ? cards[currentCard].front : ""}
+          </motion.div>
+          <motion.div
+            className="absolute w-full h-full bg-gray-700 rounded-2xl flex items-center justify-center text-xl font-bold shadow-xl"
+            animate={{ rotateY: flipped ? 0 : -180 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
+          >
+            {flipped ? cards[currentCard].back : ""}
+          </motion.div>
+        </div>
+        <Button variant="ghost" onClick={nextCard} disabled={currentCard === cards.length - 1}>
+          <ArrowRight size={32} />
+        </Button>
+      </div>
+      <Button
+        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full flex items-center"
+        onClick={handleFlip}
+      >
+        <RefreshCcw className="mr-2" size={20} /> Retourner
+      </Button>
+    </div>
+  );
+}
